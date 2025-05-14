@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./patientHome.css";
+import { useNavigate } from "react-router-dom";
 
 const PatientHome = () => {
   const [specializations, setSpecializations] = useState([]);
@@ -8,6 +9,7 @@ const PatientHome = () => {
   const [selectedSpecialization, setSelectedSpecialization] = useState("");
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
   const [slots, setSlots] = useState([]);
+  const navigate = useNavigate();
   const [appointment, setAppointment] = useState({
     patient_id: localStorage.getItem("userId"), // Get patient ID from localStorage
     doctor_id: "",
@@ -125,6 +127,9 @@ console.log(`************************${token}************************`)
           </select>
 
           <button type="submit">Book Appointment</button>
+          <button className="view-appointments-btn" onClick={() => navigate("/appointments")}>
+  View My Appointments
+</button>
         </form>
 
         {message && (

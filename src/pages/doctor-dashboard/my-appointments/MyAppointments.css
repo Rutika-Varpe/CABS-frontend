@@ -1,0 +1,21 @@
+.appointments-page {
+  padding: 2rem;
+  font-family: sans-serif;
+}
+
+.appointments-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.appointments-table th,
+.appointments-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.appointments-table th {
+  background-color: #f2f2f2;
+}

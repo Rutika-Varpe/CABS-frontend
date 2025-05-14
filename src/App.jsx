@@ -4,6 +4,8 @@ import Register from './pages/auth/Register';
 import Login from './pages/auth/Login';
 import DoctorHome from './pages/doctor-dashboard/doctor-home/DoctorHome';
 import PatientHome from './pages/patient-dashboard/patient-home/PatientHome';
+import MyAppointments from './pages/doctor-dashboard/my-appointments/MyAppointments'; 
+
 
 function App() {
   const location = useLocation();
@@ -48,6 +50,7 @@ function App() {
         <Routes>
           <Route path="/doctor-dashboard" element={<DoctorHome />} />
           <Route path="/patient-dashboard" element={<PatientHome />} />
+           <Route path="/appointments" element={<MyAppointments />} />
         </Routes>
       )}
     </div>

@@ -85,3 +85,16 @@ button[type="submit"]:hover {
   background-color: #fee2e2;
   color: #991b1b;
 }
+.view-appointments-btn {
+  margin-top: 1rem;
+  padding: 10px 20px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.view-appointments-btn:hover {
+  background-color: #005fa3;
+}
