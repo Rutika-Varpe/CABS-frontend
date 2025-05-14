@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './login.css';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // ✅ Correct named import
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -9,8 +10,7 @@ const Login = () => {
   });
 
   const [message, setMessage] = useState('');
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,18 +36,24 @@ const Login = () => {
 
       if (res.ok) {
         setMessage('Login successful!');
-        console.log('User data:', data.user); // optionally store token
+
+        // ✅ Save token
         localStorage.setItem('token', data.token);
-        // console.log("****************",data.user.role)
+        console.log(`**********************{data.token}****************************`)
 
+        // ✅ Decode token to get user info
+        const decoded = jwtDecode(data.token); // ✅ Named function
+        localStorage.setItem('userId', decoded.id);    // Save patient/doctor ID
+        localStorage.setItem('role', decoded.role);    // Save user role
 
-if(data.user.role ==="doctor"){
-  navigate("/doctor-dashboard")
-}else if(data.user.role ==="patient"){
-  navigate("/patient-dashboard")
-}
+        console.log(`User ID from token: ${decoded.id}`);
 
-        // redirect if needed
+        // ✅ Navigate based on role
+        if (data.user.role === "doctor") {
+          navigate("/doctor-dashboard");
+        } else if (data.user.role === "patient") {
+          navigate("/patient-dashboard");
+        }
       } else {
         setMessage(data.message || 'Login failed');
       }
