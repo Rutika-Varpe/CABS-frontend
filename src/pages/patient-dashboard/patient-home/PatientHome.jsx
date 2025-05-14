@@ -11,7 +11,7 @@ const PatientHome = () => {
   const [slots, setSlots] = useState([]);
   const navigate = useNavigate();
   const [appointment, setAppointment] = useState({
-    patient_id: localStorage.getItem("userId"), // Get patient ID from localStorage
+    patient_id: localStorage.getItem("userId"),
     doctor_id: "",
     appointment_date: "",
     appointment_time: "",
@@ -34,31 +34,29 @@ const PatientHome = () => {
     }
   }, [selectedDoctorId]);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const token = localStorage.getItem("token"); // Make sure you save the token during login
-console.log(`************************${token}************************`)
-    const res = await axios.post(
-      "http://localhost:5000/api/appointments/appointments",
-      {
-        ...appointment,
-        doctor_id: selectedDoctorId,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        "http://localhost:5000/api/appointments/appointments",
+        {
+          ...appointment,
+          doctor_id: selectedDoctorId,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    setMessage({ type: "success", text: res.data.message });
-  } catch (err) {
-    setMessage({ type: "error", text: "Booking failed" });
-    console.error(err);
-  }
-};
-
+      setMessage({ type: "success", text: res.data.message });
+    } catch (err) {
+      setMessage({ type: "error", text: "Booking failed" });
+      console.error(err);
+    }
+  };
 
   return (
     <div className="patient-home">
@@ -127,10 +125,14 @@ console.log(`************************${token}************************`)
           </select>
 
           <button type="submit">Book Appointment</button>
-          <button className="view-appointments-btn" onClick={() => navigate("/appointments")}>
-  View My Appointments
-</button>
         </form>
+
+        <button
+          className="view-appointments-btn"
+          onClick={() => navigate("/appointments")}
+        >
+          View My Appointments
+        </button>
 
         {message && (
           <div className={`message ${message.type}`}>

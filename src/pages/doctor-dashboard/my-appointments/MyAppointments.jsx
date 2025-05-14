@@ -26,31 +26,34 @@ const MyAppointments = () => {
   }, []);
 
   return (
-    <div className="appointments-page">
+    <div className="appointments-container">
       <h2>My Appointments</h2>
+     <div className="slogan-container">
+      <h1>Stay on Track with Your Health – Your Appointments, Simplified!</h1>
+    </div>
       {appointments.length === 0 ? (
-        <p>No appointments booked.</p>
+        <p className="no-appointments">No appointments booked yet.</p>
       ) : (
-        <table className="appointments-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Doctor</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {appointments.map((appt) => (
-              <tr key={appt.id}>
-                <td>{appt.appointment_date}</td>
-                <td>{appt.appointment_time}</td>
-                <td>{appt.doctor?.full_name || "N/A"}</td>
-                <td>{appt.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="appointments-grid">
+          {appointments.map((appt) => (
+            <div className="appointment-card" key={appt.id}>
+              <div className="appointment-details">
+                <h3>{appt.doctor?.full_name || "N/A"}</h3>
+                <p><strong>Specialization:</strong> {appt.doctor?.specialization || "N/A"}</p>
+              </div>
+              <div className="appointment-meta">
+                <p><strong>Date:</strong> {appt.appointment_date}</p>
+                <p><strong>Time:</strong> {appt.appointment_time}</p>
+                <p>
+                  <strong>Status:</strong>{" "}
+                  <span className={`status ${appt.status.toLowerCase()}`}>
+                    {appt.status}
+                  </span>
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
