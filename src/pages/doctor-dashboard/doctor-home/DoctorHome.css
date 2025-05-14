@@ -1,0 +1,149 @@
+.doctor-dashboard {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f8fafc;
+}
+
+.dashboard-heading {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+}
+
+.dashboard-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.stat-card h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.stat-card.confirmed p {
+  color: #2ecc71;
+}
+
+.stat-card.pending p {
+  color: #f39c12;
+}
+
+.upcoming-title {
+  font-size: 1.5rem;
+  color: #34495e;
+  margin-bottom: 1rem;
+}
+
+.appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.appointment-card {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.appointment-card:hover {
+  transform: scale(1.01);
+}
+
+.appointment-card div {
+  font-size: 1rem;
+  color: #2c3e50;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  background-color: #fff7cc;
+  color: #b58900;
+}
+
+.status.confirmed {
+  background-color: #d1f7c4;
+  color: #0a7d00;
+}
+
+.status.canceled {
+  background-color: #fddede;
+  color: #c0392b;
+}
+
+.no-appointments {
+  font-style: italic;
+  color: #888;
+  text-align: center;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.approve-btn,
+.cancel-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.approve-btn {
+  background-color: #2ecc71;
+  color: #fff;
+}
+
+.approve-btn:hover {
+  background-color: #27ae60;
+}
+
+.cancel-btn {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  background-color: #c0392b;
+}

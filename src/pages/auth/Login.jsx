@@ -39,7 +39,7 @@ const Login = () => {
 
         // ✅ Save token
         localStorage.setItem('token', data.token);
-        console.log(`**********************{data.token}****************************`)
+        console.log(`**********************${data.token}****************************`)
 
         // ✅ Decode token to get user info
         const decoded = jwtDecode(data.token); // ✅ Named function
