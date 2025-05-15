@@ -63,6 +63,25 @@ const DoctorHome = () => {
     }
   };
 
+  const deleteAppointment = async (appointmentId) => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/appointments/appointments/${doctorId}/${appointmentId}`, // Adjust URL if needed
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Remove deleted appointment from state
+      setAppointments((prev) =>
+        prev.filter((appt) => appt.id !== appointmentId)
+      );
+    } catch (err) {
+      console.error("Error deleting appointment", err);
+    }
+  };
+
   const handleSlotSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -196,22 +215,31 @@ const DoctorHome = () => {
                 </span>
               </div>
 
-              {appt.status.toLowerCase() === "pending" && (
-                <div className="action-buttons">
-                  <button
-                    className="approve-btn"
-                    onClick={() => updateStatus(appt.id, "confirmed")}
-                  >
-                    Approve
-                  </button>
-                  <button
-                    className="cancel-btn"
-                    onClick={() => updateStatus(appt.id, "cancelled")}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              )}
+          <div className="action-buttons">
+  {appt.status.toLowerCase() === "pending" && (
+    <>
+      <button
+        className="approve-btn"
+        onClick={() => updateStatus(appt.id, "confirmed")}
+      >
+        Approve
+      </button>
+      <button
+        className="cancel-btn"
+        onClick={() => updateStatus(appt.id, "cancelled")}
+      >
+        Cancel
+      </button>
+    </>
+  )}
+  <button
+    className="done-btn"
+    onClick={() => deleteAppointment(appt.id)}
+  >
+    Done
+  </button>
+</div>
+
             </div>
           ))
         )}

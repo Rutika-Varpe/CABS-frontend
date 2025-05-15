@@ -161,3 +161,18 @@
   font-style: italic;
   color: #555;
 }
+.done-btn {
+  background-color: #28a745;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.done-btn:hover {
+  background-color: #218838;
+}
