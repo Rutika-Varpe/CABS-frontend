@@ -7,7 +7,7 @@ const DoctorHome = () => {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      const doctorId = localStorage.getItem("userId");
+      const doctorId = parseInt(localStorage.getItem("userId"));
       const token = localStorage.getItem("token");
 
       try {
@@ -28,35 +28,50 @@ const DoctorHome = () => {
     fetchAppointments();
   }, []);
 
-  const updateStatus = async (id, status) => {
+  const updateStatus = async (appointmentId, status) => {
+    const doctorId = parseInt(localStorage.getItem("userId")); // ✅ make sure it's a number
     const token = localStorage.getItem("token");
+
+    console.log("Updating appointment", {
+      doctorId,
+      appointmentId,
+      status,
+    });
+
     try {
-      await axios.put(
-        `http://localhost:5000/api/appointments/appointments/${id}/status`,
+      const res = await axios.put(
+        `http://localhost:5000/api/appointments/appointments/${doctorId}/${appointmentId}/status`,
         { status },
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // ✅ explicitly add this
           },
         }
       );
-      // Refresh appointments after update
+
+      console.log("Update success:", res.data);
+
+      // Update UI
       setAppointments((prev) =>
         prev.map((appt) =>
-          appt.id === id ? { ...appt, status } : appt
+          appt.id === appointmentId ? { ...appt, status } : appt
         )
       );
     } catch (err) {
-      console.error("Error updating appointment status", err);
+      console.error(
+        "Error updating appointment status",
+        err?.response?.data || err.message
+      );
     }
   };
 
   const totalAppointments = appointments.length;
   const confirmed = appointments.filter(
-    (a) => a.status.toLowerCase() === "confirmed"
+    (a) => a.status?.toLowerCase() === "confirmed"
   ).length;
   const pending = appointments.filter(
-    (a) => a.status.toLowerCase() === "pending"
+    (a) => a.status?.toLowerCase() === "pending"
   ).length;
 
   return (
@@ -85,11 +100,24 @@ const DoctorHome = () => {
         ) : (
           appointments.map((appt) => (
             <div className="appointment-card" key={appt.id}>
-              <div><strong>Patient:</strong><br />{appt.patient?.full_name || "N/A"}</div>
-              <div><strong>Date:</strong><br />{appt.appointment_date}</div>
-              <div><strong>Time:</strong><br />{appt.appointment_time}</div>
               <div>
-                <strong>Status:</strong><br />
+                <strong>Patient:</strong>
+                <br />
+                {appt.patient?.full_name || "N/A"}
+              </div>
+              <div>
+                <strong>Date:</strong>
+                <br />
+                {appt.appointment_date}
+              </div>
+              <div>
+                <strong>Time:</strong>
+                <br />
+                {appt.appointment_time}
+              </div>
+              <div>
+                <strong>Status:</strong>
+                <br />
                 <span className={`status ${appt.status.toLowerCase()}`}>
                   {appt.status}
                 </span>
@@ -99,13 +127,13 @@ const DoctorHome = () => {
                 <div className="action-buttons">
                   <button
                     className="approve-btn"
-                    onClick={() => updateStatus(appt.id, "Confirmed")}
+                    onClick={() => updateStatus(appt.id, "confirmed")}
                   >
                     Approve
                   </button>
                   <button
                     className="cancel-btn"
-                    onClick={() => updateStatus(appt.id, "Canceled")}
+                    onClick={() => updateStatus(appt.id, "cancelled")}
                   >
                     Cancel
                   </button>
