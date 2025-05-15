@@ -1,22 +1,27 @@
+// DoctorHome.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./DoctorHome.css";
 
 const DoctorHome = () => {
   const [appointments, setAppointments] = useState([]);
+  const [showSlotForm, setShowSlotForm] = useState(false);
+  const [slotData, setSlotData] = useState({
+    available_date: "",
+    start_time: "",
+    end_time: "",
+  });
+
+  const doctorId = parseInt(localStorage.getItem("userId"));
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      const doctorId = parseInt(localStorage.getItem("userId"));
-      const token = localStorage.getItem("token");
-
       try {
         const res = await axios.get(
           `http://localhost:5000/api/appointments/doctor/${doctorId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
         setAppointments(res.data);
@@ -29,15 +34,6 @@ const DoctorHome = () => {
   }, []);
 
   const updateStatus = async (appointmentId, status) => {
-    const doctorId = parseInt(localStorage.getItem("userId")); // ✅ make sure it's a number
-    const token = localStorage.getItem("token");
-
-    console.log("Updating appointment", {
-      doctorId,
-      appointmentId,
-      status,
-    });
-
     try {
       const res = await axios.put(
         `http://localhost:5000/api/appointments/appointments/${doctorId}/${appointmentId}/status`,
@@ -45,24 +41,40 @@ const DoctorHome = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // ✅ explicitly add this
+            "Content-Type": "application/json",
           },
         }
       );
 
-      console.log("Update success:", res.data);
-
-      // Update UI
       setAppointments((prev) =>
         prev.map((appt) =>
           appt.id === appointmentId ? { ...appt, status } : appt
         )
       );
     } catch (err) {
-      console.error(
-        "Error updating appointment status",
-        err?.response?.data || err.message
+      console.error("Error updating appointment status", err);
+    }
+  };
+
+  const handleSlotSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/availability",
+        { doctor_id: doctorId, ...slotData },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
+      alert("Slot created successfully!");
+      setShowSlotForm(false);
+      setSlotData({ available_date: "", start_time: "", end_time: "" });
+    } catch (err) {
+      console.error("Error creating slot", err);
+      alert("Failed to create slot.");
     }
   };
 
@@ -92,6 +104,51 @@ const DoctorHome = () => {
           <p>{pending}</p>
         </div>
       </div>
+
+      <button className="slot-button" onClick={() => setShowSlotForm(!showSlotForm)}>
+        {showSlotForm ? "Close Slot Form" : "Add Availability Slot"}
+      </button>
+
+      {showSlotForm && (
+        <form className="slot-form" onSubmit={handleSlotSubmit}>
+          <label>
+            Date:
+            <input
+              type="date"
+              value={slotData.available_date}
+              onChange={(e) =>
+                setSlotData({ ...slotData, available_date: e.target.value })
+              }
+              required
+            />
+          </label>
+          <label>
+            Start Time:
+            <input
+              type="time"
+              value={slotData.start_time}
+              onChange={(e) =>
+                setSlotData({ ...slotData, start_time: e.target.value })
+              }
+              required
+            />
+          </label>
+          <label>
+            End Time:
+            <input
+              type="time"
+              value={slotData.end_time}
+              onChange={(e) =>
+                setSlotData({ ...slotData, end_time: e.target.value })
+              }
+              required
+            />
+          </label>
+          <button type="submit" className="submit-slot-btn">
+            Submit Slot
+          </button>
+        </form>
+      )}
 
       <h3 className="upcoming-title">Upcoming Appointments</h3>
       <div className="appointments-list">
