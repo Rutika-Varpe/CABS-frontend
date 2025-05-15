@@ -1,119 +1,150 @@
-.appointments-container {
-  padding: 30px 20px;
-  max-width: 1100px;
-  margin: auto;
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f4f8;
 }
 
-.appointments-container h2 {
+.appointments-container {
+  min-height: 100vh;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.header-section {
   text-align: center;
-  margin-bottom: 30px;
-  color: #2e3a59;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  color: #1e88e5;
+  margin-bottom: 0.5rem;
+}
+
+.slogan, .slogan-secondary {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 0.3rem 0;
+}
+
+.appointments-section {
+  display: flex;
+  flex-direction: column;
 }
 
 .no-appointments {
   text-align: center;
-  font-size: 18px;
-  color: #777;
+  font-size: 1.3rem;
+  color: #999;
+  margin-top: 2rem;
 }
 
-.appointments-grid {
+/* Scroll horizontally full width */
+.appointments-scroll {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  gap: 1rem;
+  scroll-snap-type: x mandatory;
+  width: 100%;
 }
 
 .appointment-card {
+  min-width: 250px;
+  max-width: 250px;
+  flex-shrink: 0;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+  scroll-snap-align: start;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-  background: #ffffff;
-  padding: 20px 30px;
-  border-radius: 16px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  flex-wrap: wrap;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .appointment-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
 }
 
-.appointment-details {
-  flex: 1;
-  min-width: 200px;
+.appointment-details h3 {
+  color: #1565c0;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
-.appointment-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  min-width: 180px;
-  gap: 6px;
-}
-
-.appointment-card h3 {
-  color: #2e86de;
-  margin-bottom: 10px;
-}
-
-.appointment-card p {
-  margin: 6px 0;
+.appointment-details p,
+.appointment-meta p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
   color: #444;
 }
 
 .status {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.85rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
   font-weight: 600;
-  display: inline-block;
   text-transform: capitalize;
-}
-
-.status.pending {
-  background-color: #fef3c7;
-  color: #b45309;
+  display: inline-block;
+  margin-top: 0.4rem;
 }
 
 .status.confirmed {
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.status.pending {
+  background-color: #fff9c4;
+  color: #fbc02d;
 }
 
 .status.cancelled {
-  background-color: #fee2e2;
-  color: #991b1b;
+  background-color: #ffcdd2;
+  color: #c62828;
 }
 
-@media (max-width: 768px) {
-  .appointment-card {
-    flex-direction: column;
-    align-items: flex-start;
+/* Scrollbar styling */
+.appointments-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+.appointments-scroll::-webkit-scrollbar-thumb {
+  background: #90caf9;
+  border-radius: 5px;
+}
+
+/* New Zoom-in animation */
+.zoom-in {
+  animation: zoomIn 0.4s ease-in-out both;
+}
+
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
   }
-
-  .appointment-meta {
-    align-items: flex-start;
-    margin-top: 10px;
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
-.slogan-container {
-  text-align: center;
-  padding: 20px;
-  background-color: #f0f8ff; /* Light background color */
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin: 20px auto;
-  width: 80%;
-  max-width: 600px;
+
+.cancel-btn {
+  margin-top: 0.8rem;
+  background-color: #ef5350;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
 }
 
-.slogan-container h1 {
-  font-family: 'Arial', sans-serif;
-  color: #2c3e50; /* Darker color for text */
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0;
+.cancel-btn:hover {
+  background-color: #d32f2f;
 }

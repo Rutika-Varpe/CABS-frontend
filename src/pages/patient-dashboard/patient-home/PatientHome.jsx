@@ -64,71 +64,77 @@ const PatientHome = () => {
       <p className="slogan">Your Health, Our Priority — Book Your Doctor in Seconds!</p>
 
       <div className="form-card">
-        <h2>Book Appointment</h2>
+        <h2 className="form-title">Book Appointment</h2>
         <form className="appointment-form" onSubmit={handleSubmit}>
-          <label>Specialization:</label>
-          <select
-            value={selectedSpecialization}
-            onChange={(e) => {
-              setSelectedSpecialization(e.target.value);
-              setSelectedDoctorId("");
-              setSlots([]);
-              setMessage("");
-            }}
-          >
-            <option value="">Select</option>
-            {specializations.map((spec, index) => (
-              <option key={index} value={spec}>
-                {spec}
-              </option>
-            ))}
-          </select>
-
-          <label>Doctor:</label>
-          <select
-            value={selectedDoctorId}
-            onChange={(e) => {
-              setSelectedDoctorId(e.target.value);
-              setAppointment({ ...appointment, doctor_id: e.target.value });
-              setMessage("");
-            }}
-            disabled={!selectedSpecialization}
-          >
-            <option value="">Select</option>
-            {doctors
-              .filter((doc) => doc.specialization === selectedSpecialization)
-              .map((doc) => (
-                <option key={doc.id} value={doc.id}>
-                  {doc.full_name}
+          <div className="form-group">
+            <label>Specialization:</label>
+            <select
+              value={selectedSpecialization}
+              onChange={(e) => {
+                setSelectedSpecialization(e.target.value);
+                setSelectedDoctorId("");
+                setSlots([]);
+                setMessage("");
+              }}
+            >
+              <option value="">Select</option>
+              {specializations.map((spec, index) => (
+                <option key={index} value={spec}>
+                  {spec}
                 </option>
               ))}
-          </select>
+            </select>
+          </div>
 
-          <label>Available Slots:</label>
-          <select
-            onChange={(e) => {
-              const [date, time] = e.target.value.split(" ");
-              setAppointment({
-                ...appointment,
-                appointment_date: date,
-                appointment_time: time,
-              });
-            }}
-            disabled={!selectedDoctorId}
-          >
-            <option value="">Select</option>
-            {slots.map((slot) => (
-              <option key={slot.id} value={`${slot.available_date} ${slot.start_time}`}>
-                {slot.available_date} at {slot.start_time} - {slot.end_time}
-              </option>
-            ))}
-          </select>
+          <div className="form-group">
+            <label>Doctor:</label>
+            <select
+              value={selectedDoctorId}
+              onChange={(e) => {
+                setSelectedDoctorId(e.target.value);
+                setAppointment({ ...appointment, doctor_id: e.target.value });
+                setMessage("");
+              }}
+              disabled={!selectedSpecialization}
+            >
+              <option value="">Select</option>
+              {doctors
+                .filter((doc) => doc.specialization === selectedSpecialization)
+                .map((doc) => (
+                  <option key={doc.id} value={doc.id}>
+                    {doc.full_name}
+                  </option>
+                ))}
+            </select>
+          </div>
 
-          <button type="submit">Book Appointment</button>
+          <div className="form-group">
+            <label>Available Slots:</label>
+            <select
+              onChange={(e) => {
+                const [date, time] = e.target.value.split(" ");
+                setAppointment({
+                  ...appointment,
+                  appointment_date: date,
+                  appointment_time: time,
+                });
+              }}
+              disabled={!selectedDoctorId}
+            >
+              <option value="">Select</option>
+              {slots.map((slot) => (
+                <option key={slot.id} value={`${slot.available_date} ${slot.start_time}`}>
+                  {slot.available_date} at {slot.start_time} - {slot.end_time}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button type="submit" className="primary-btn">Book Appointment</button>
         </form>
 
         <button
-          className="view-appointments-btn"
+          className="secondary-btn"
           onClick={() => navigate("/appointments")}
         >
           View My Appointments
