@@ -1,11 +1,12 @@
-// DoctorHome.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./DoctorHome.css";
+import { jwtDecode } from "jwt-decode"; // ✅ correct import
 
 const DoctorHome = () => {
   const [appointments, setAppointments] = useState([]);
   const [showSlotForm, setShowSlotForm] = useState(false);
+  const [slotMessage, setSlotMessage] = useState("");
   const [slotData, setSlotData] = useState({
     available_date: "",
     start_time: "",
@@ -14,6 +15,12 @@ const DoctorHome = () => {
 
   const doctorId = parseInt(localStorage.getItem("userId"));
   const token = localStorage.getItem("token");
+
+  let doctorName = "Doctor";
+  if (token) {
+    const decoded = jwtDecode(token); // ✅ fixed usage
+    doctorName = decoded.full_name || "Doctor";
+  }
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -31,11 +38,11 @@ const DoctorHome = () => {
     };
 
     fetchAppointments();
-  }, []);
+  }, [doctorId, token]);
 
   const updateStatus = async (appointmentId, status) => {
     try {
-      const res = await axios.put(
+      await axios.put(
         `http://localhost:5000/api/appointments/appointments/${doctorId}/${appointmentId}/status`,
         { status },
         {
@@ -59,7 +66,7 @@ const DoctorHome = () => {
   const handleSlotSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:5000/api/availability",
         { doctor_id: doctorId, ...slotData },
         {
@@ -69,12 +76,14 @@ const DoctorHome = () => {
           },
         }
       );
-      alert("Slot created successfully!");
+      setSlotMessage("Slot created successfully!");
       setShowSlotForm(false);
       setSlotData({ available_date: "", start_time: "", end_time: "" });
+      setTimeout(() => setSlotMessage(""), 3000);
     } catch (err) {
       console.error("Error creating slot", err);
-      alert("Failed to create slot.");
+      setSlotMessage("Failed to create slot.");
+      setTimeout(() => setSlotMessage(""), 3000);
     }
   };
 
@@ -88,7 +97,7 @@ const DoctorHome = () => {
 
   return (
     <div className="doctor-dashboard">
-      <h2 className="dashboard-heading">Welcome, Doctor!</h2>
+      <h2 className="dashboard-heading">Welcome, {doctorName}!</h2>
 
       <div className="dashboard-stats">
         <div className="stat-card">
@@ -105,9 +114,16 @@ const DoctorHome = () => {
         </div>
       </div>
 
-      <button className="slot-button" onClick={() => setShowSlotForm(!showSlotForm)}>
-        {showSlotForm ? "Close Slot Form" : "Add Availability Slot"}
-      </button>
+      <div className="slot-header">
+        <button
+          className="slot-button"
+          onClick={() => setShowSlotForm(!showSlotForm)}
+        >
+          {showSlotForm ? "Close Slot Form" : "Add Availability Slot"}
+        </button>
+      </div>
+
+      {slotMessage && <p className="slot-message">{slotMessage}</p>}
 
       {showSlotForm && (
         <form className="slot-form" onSubmit={handleSlotSubmit}>
