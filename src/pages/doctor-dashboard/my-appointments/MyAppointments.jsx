@@ -5,48 +5,44 @@ import "./MyAppointments.css";
 const MyAppointments = () => {
   const [appointments, setAppointments] = useState([]);
 
+  const fetchAppointments = async () => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    try {
+      const res = await axios.get(`http://localhost:5000/api/appointments/appointments/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setAppointments(res.data);
+    } catch (err) {
+      console.error("Failed to fetch appointments", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchAppointments = async () => {
-      const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
-
-      try {
-        const res = await axios.get(`http://localhost:5000/api/appointments/appointments/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setAppointments(res.data);
-      } catch (err) {
-        console.error("Failed to fetch appointments", err);
-      }
-    };
-
     fetchAppointments();
   }, []);
 
-  const handleCancel = async (id) => {
+  const handleCancel = async (doctorId, appointmentId) => {
     const token = localStorage.getItem("token");
 
     try {
       await axios.put(
-        `http://localhost:5000/api/appointments/cancel/${id}`,
-        { status: "cancelled" },
+        `http://localhost:5000/api/appointments/appointments/${doctorId}/${appointmentId}`,
+        {}, // no body needed
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
-      // Update appointment status locally
-      setAppointments((prev) =>
-        prev.map((appt) =>
-          appt.id === id ? { ...appt, status: "cancelled" } : appt
-        )
-      );
-    } catch (err) {
-      console.error("Failed to cancel appointment", err);
+      alert("Appointment cancelled successfully.");
+      fetchAppointments(); // refresh the list
+    } catch (error) {
+      console.error("Error cancelling appointment:", error);
+      alert("Failed to cancel the appointment.");
     }
   };
 
@@ -80,10 +76,10 @@ const MyAppointments = () => {
                   </p>
                   {appt.status.toLowerCase() !== "cancelled" && (
                     <button
-                      className="cancel-btn"
-                      onClick={() => handleCancel(appt.id)}
+                      className="cancel-button"
+                      onClick={() => handleCancel(appt.doctor_id, appt.id)}
                     >
-                      Cancel Appointment
+                      Cancel
                     </button>
                   )}
                 </div>
