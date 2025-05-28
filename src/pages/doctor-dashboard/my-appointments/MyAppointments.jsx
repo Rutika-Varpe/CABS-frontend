@@ -76,7 +76,7 @@ const MyAppointments = () => {
                   </p>
                   {appt.status.toLowerCase() !== "cancelled" && (
                     <button
-                      className="cancel-button"
+                      className="cancel-btn"
                       onClick={() => handleCancel(appt.doctor_id, appt.id)}
                     >
                       Cancel
