@@ -138,9 +138,7 @@ console.log(`**************${appointmentId}*****************`)
                   {appt.status.toLowerCase() !== "cancelled" && (
                     <button
                       className="cancel-btn"
-                      onClick={() =>
-                        handleCancel(appt.doctor_id, appt.id)
-                      }
+                      onClick={() => handleCancel(appt.doctor_id, appt.id)}
                     >
                       Cancel
                     </button>
