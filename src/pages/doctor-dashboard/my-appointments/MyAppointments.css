@@ -108,7 +108,7 @@ body, html {
   color: #c62828;
 }
 
-/* Scrollbar styling */
+
 .appointments-scroll::-webkit-scrollbar {
   height: 8px;
 }
