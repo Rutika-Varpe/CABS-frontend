@@ -6,6 +6,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 const MyAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [message, setMessage] = useState("");
 
   const fetchAppointments = async () => {
     const token = localStorage.getItem("token");
@@ -30,6 +32,16 @@ const MyAppointments = () => {
     fetchAppointments();
   }, []);
 
+  // New useEffect to auto-hide messages after 3 seconds
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   const handleCancel = async (doctorId, appointmentId) => {
     const token = localStorage.getItem("token");
 
@@ -43,36 +55,40 @@ const MyAppointments = () => {
           },
         }
       );
-      alert("Appointment cancelled successfully.");
+      setMessage("Appointment cancelled successfully.");
       fetchAppointments();
     } catch (error) {
       console.error("Error cancelling appointment:", error);
-      alert("Failed to cancel the appointment.");
+      setMessage("Failed to cancel the appointment.");
     }
   };
 
-const handleDelete = async (doctorId, appointmentId) => {
-  const token = localStorage.getItem("token");
-console.log(`**************${appointmentId}*****************`)
-  if (!window.confirm("Are you sure you want to delete this appointment?")) return;
+  const confirmDelete = (id) => {
+    setConfirmDeleteId(id);
+    setOpenDropdownId(null);
+    setMessage("Are you sure you want to delete this appointment?");
+  };
 
-  try {
-    await axios.delete(
-      `http://localhost:5000/api/appointments/appointments/${doctorId}/${appointmentId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    alert("Appointment deleted successfully.");
-    fetchAppointments(); // Refresh the list
-  } catch (error) {
-    console.error("Error deleting appointment:", error);
-    alert("Failed to delete the appointment.");
-  }
-};
+  const handleDelete = async (doctorId, appointmentId) => {
+    const token = localStorage.getItem("token");
 
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/appointments/appointments/${doctorId}/${appointmentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setMessage("Appointment deleted successfully.");
+      setConfirmDeleteId(null);
+      fetchAppointments();
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
+      setMessage("Failed to delete the appointment.");
+    }
+  };
 
   return (
     <div className="appointments-container">
@@ -88,6 +104,8 @@ console.log(`**************${appointmentId}*****************`)
       </header>
 
       <main className="appointments-section">
+        {message && <div className="message-banner">{message}</div>}
+
         {appointments.length === 0 ? (
           <p className="no-appointments">No appointments booked yet.</p>
         ) : (
@@ -98,16 +116,14 @@ console.log(`**************${appointmentId}*****************`)
                   <BsThreeDotsVertical
                     className="options-icon"
                     onClick={() =>
-                      setOpenDropdownId(
-                        openDropdownId === appt.id ? null : appt.id
-                      )
+                      setOpenDropdownId(openDropdownId === appt.id ? null : appt.id)
                     }
                   />
                   {openDropdownId === appt.id && (
                     <div className="dropdown-menu">
                       <button
                         className="dropdown-item delete"
-                        onClick={() => handleDelete(appt.id)}
+                        onClick={() => confirmDelete(appt.id)}
                       >
                         Delete
                       </button>
@@ -135,6 +151,7 @@ console.log(`**************${appointmentId}*****************`)
                       {appt.status}
                     </span>
                   </p>
+
                   {appt.status.toLowerCase() !== "cancelled" && (
                     <button
                       className="cancel-btn"
@@ -142,6 +159,27 @@ console.log(`**************${appointmentId}*****************`)
                     >
                       Cancel
                     </button>
+                  )}
+
+                  {confirmDeleteId === appt.id && (
+                    <div className="confirm-box">
+                      <p>Are you sure you want to delete this appointment?</p>
+                      <button
+                        className="confirm-btn"
+                        onClick={() => handleDelete(appt.doctor_id, appt.id)}
+                      >
+                        Yes, Delete
+                      </button>
+                      <button
+                        className="cancel-btn"
+                        onClick={() => {
+                          setConfirmDeleteId(null);
+                          setMessage("");
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
